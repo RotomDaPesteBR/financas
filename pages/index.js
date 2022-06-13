@@ -157,10 +157,10 @@ export default function Home(){
                     <p style={stylesheet.resultado}>FGTS: </p>
                     </Col>
                     <Col>
-                    <p style={stylesheet.resultado}>{salarioLiquido}</p>
-                    <p style={stylesheet.resultado}>{INSS}</p>
-                    <p style={stylesheet.resultado}>{IRPF}</p>
-                    <p style={stylesheet.resultado}>{FGTS}</p>
+                    <p style={stylesheet.resultado}>R${salarioLiquido}</p>
+                    <p style={stylesheet.resultado}>R${INSS}</p>
+                    <p style={stylesheet.resultado}>R${IRPF}</p>
+                    <p style={stylesheet.resultado}>R${FGTS}</p>
                     </Col>
                     </Row>
                 </div>
