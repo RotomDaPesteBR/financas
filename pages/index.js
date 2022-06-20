@@ -1,23 +1,33 @@
 import styles from '../styles/index.module.css'
 import { useReducer, useState } from 'react';
 import React, { Component } from 'react'
-import { Container, Col, Row, Form, Button, ButtonGroup, Nav, Navbar } from 'react-bootstrap';
+import { Container, Col, Row, Form, Button, ButtonGroup, Nav, Navbar, ListGroup } from 'react-bootstrap';
 
 export default function Home(){
     const [salLiq, setSalLiq] = useState("flex");
-    const [ASD, setASD] = useState("none");
+    const [precoProd, setPrecoProd] = useState("none");
     const [ASD2, setASD2] = useState("none");
     const [ASD3, setASD3] = useState("none");
+
     const [salarioBruto, setSalarioBruto] = useState(" ");
+    const [precoInicial, setPrecoInicial] = useState(" ");
+    const [margemLucro, setMargemLucro] = useState(" ");
+
     const [salarioLiquido, setSalarioLiquido] = useState("0");
     const [INSS, setINSS] = useState("0");
     const [IRPF, setIRPF] = useState("0");
     const [FGTS, setFGTS] = useState("0");
+    const [VI, setVI] = useState("0");
+    const [margem, setMargem] = useState("0");
+    const [VL, setVL] = useState("0");
+
     let valorINSS;
     let valorIRPF;
-    
 
-    function calcular(){
+    let valorVI;
+    let valorVCI;
+
+    function calcularSalario(){
         calcularINSS();
         calcularIRPF();
         calcularFGTS();
@@ -38,7 +48,7 @@ export default function Home(){
             valorINSS = (valorINSS / 100) * 14
         }
 
-        setINSS(valorINSS);
+        setINSS(valorINSS.toFixed(2));
     }
 
     function calcularIRPF(){
@@ -54,31 +64,85 @@ export default function Home(){
         }else{
             valorIRPF = (valorIRPF / 100) * 27.5
         }
-        setIRPF(valorIRPF);
+        setIRPF(valorIRPF.toFixed(2));
     }
 
     function calcularFGTS(){
         let valor = (salarioBruto / 100) * 8; 
-        setFGTS(valor)
+        setFGTS(valor.toFixed(2))
     }
 
     function calcularSalarioLiq(){
         let valor = salarioBruto - valorINSS - valorIRPF;
-        setSalarioLiquido(valor);
+        setSalarioLiquido(valor.toFixed(2));
+    }
+
+    function calcularPreco(){
+        calcularVI()
+        calcularVCI()
+        calcularVL()
+    }
+
+    function calcularVI(){
+        let PIS = (precoInicial / 100) * 0.65;
+        let CONFINS = (precoInicial / 100) * 3;
+        valorVI = PIS + CONFINS;
+        setVI(valorVI.toFixed(2));
+    }
+
+    function calcularVCI(){
+        valorVCI = parseFloat(precoInicial) + valorVI;
+    }
+
+    function calcularVL(){
+        let MDL = (valorVCI / 100) * margemLucro;
+        let valorVL = valorVCI + MDL;
+        setMargem(MDL.toFixed(2));
+        setVL(valorVL.toFixed(2));
     }
 
     function showSalLiq() {
         setSalLiq("flex");
-        setASD("none");
+        setPrecoProd("none");
         setASD2("none");
         setASD3("none");
+        setSalLiqButton(stylesheet.selected);
+        setPrecoProdutoButton();
+        setASD2Button();
+        setASD3Button();
     }
 
-    function showASD() {
+    function showPrecoProduto(){
         setSalLiq("none");
-        setASD("flex");
+        setPrecoProd("flex");
         setASD2("none");
         setASD3("none");
+        setSalLiqButton();
+        setPrecoProdutoButton(stylesheet.selected);
+        setASD2Button();
+        setASD3Button();
+    }
+
+    function showASD2() {
+        setSalLiq("none");
+        setPrecoProd("none");
+        setASD2("flex");
+        setASD3("none");
+        setSalLiqButton();
+        setPrecoProdutoButton();
+        setASD2Button(stylesheet.selected);
+        setASD3Button();
+    }
+
+    function showASD3() {
+        setSalLiq("none");
+        setPrecoProd("none");
+        setASD2("none");
+        setASD3("flex");
+        setSalLiqButton();
+        setPrecoProdutoButton();
+        setASD2Button();
+        setASD3Button(stylesheet.selected);
     }
 
     const stylesheet = {
@@ -90,14 +154,33 @@ export default function Home(){
         },
 
         navbar:{
-            top: "65px",
+            display: "inline-flex",
+            marginTop: "65px",
+            marginRight: "0",
             height: "65px",
             zIndex: "10",
             width: "100%",
+            backgroundColor: "#212529",
+            alignItems: "center",
+            justifyContent: "center",
+            listStyle: "none",
+        },
+
+        selected:{
+            backgroundColor: "white",
+            color: "black",
+            border: "white",
+            borderTopLeftRadius: "5px",
+            borderTopRightRadius: "5px",
+        },
+
+        unselected:{
+            color: "white",
         },
 
         form:{
             padding: "100px",
+            paddingBottom: "0",
         },
 
         input: {
@@ -115,56 +198,159 @@ export default function Home(){
             textAlign: "center",
         },
 
+        tabelaResultados:{
+            padding: "100px",
+            paddingTop: "0",
+        },
+
+        itemTabelaResultadosLeft:{
+            paddingRight: "0",
+        },
+
+        itemTabelaResultadosRight:{
+            paddingLeft: "0",
+        },
+
         salarioLiq: {
             display: salLiq,
             justifyContent: "center",
             flexDirection: "column",
             width: "100%",
         },
+
+        precoProd: {
+            display: precoProd,
+            justifyContent: "center",
+            flexDirection: "column",
+            width: "100%",
+        },
+
+        ASD2: {
+            display: ASD2,
+            justifyContent: "center",
+            flexDirection: "column",
+            width: "100%",
+        },
+
+        ASD3: {
+            display: ASD3,
+            justifyContent: "center",
+            flexDirection: "column",
+            width: "100%",
+        },
     }
 
+        const [salLiqButton, setSalLiqButton] = useState(stylesheet.selected);
+        const [precoProdutoButton, setPrecoProdutoButton] = useState();
+        const [ASD2Button, setASD2Button] = useState();
+        const [ASD3Button, setASD3Button] = useState();
+
     return  <div style={stylesheet.content}>
-                <Navbar style={stylesheet.navbar} bg="dark" variant='dark'>
-                    <Container>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="me-auto justify-content-center" variant="pills" defaultActiveKey="sal">
-                        <Nav.Link onClick={()=>showSalLiq()} eventKey="sal">Salario Líquido</Nav.Link>
-                        <Nav.Link onClick={()=>showASD()} eventKey="asd">ASD</Nav.Link>
-                        <Nav.Link onClick={()=>showASD()} eventKey="asd2">ASD</Nav.Link>
-                        <Nav.Link onClick={()=>showASD()} eventKey="asd3">ASD</Nav.Link> 
-                        </Nav>
-                    </Navbar.Collapse>  
-                    </Container>
-                </Navbar>
+                <ul style={stylesheet.navbar}>
+                        <li><button onClick={()=>showSalLiq()} className={styles.navbarItems} style={salLiqButton}>Salario Líquido</button></li>
+                        <li><button onClick={()=>showPrecoProduto()} className={styles.navbarItems} style={precoProdutoButton}>Preço Produto</button></li>
+                        <li><button onClick={()=>showASD2()} style={ASD2Button} className={styles.navbarItems}>ASD</button></li>
+                        <li><button onClick={()=>showASD3()} style={ASD3Button} className={styles.navbarItems}>ASD</button></li> 
+                </ul>
                 <div style={stylesheet.salarioLiq}>
                     <Form style={stylesheet.form}>
                         <Col>
                         Salário Bruto:
                         <Form.Control style={stylesheet.input} type="number" placeholder="" value={salarioBruto} onChange={e => setSalarioBruto(e.target.value)}/>
                         <br></br>
-                        <Button onClick={()=>calcular()} style={stylesheet.botao} variant="primary">
+                        <Button onClick={()=>calcularSalario()} style={stylesheet.botao} variant="primary">
                         Calcular
                         </Button>
                         </Col>
                     </Form>
-                    <br></br>
-                    <Row>
-                    <Col>
-                    <p style={stylesheet.resultado}>Salário Liquido:</p>
-                    <p style={stylesheet.resultado}>INSS:</p>
-                    <p style={stylesheet.resultado}>IRPF:</p>
-                    <p style={stylesheet.resultado}>FGTS:</p>
-                    </Col>
-                    <Col>
-                    <p style={stylesheet.resultado}>R${salarioLiquido}</p>
-                    <p style={stylesheet.resultado}>R${INSS}</p>
-                    <p style={stylesheet.resultado}>R${IRPF}</p>
-                    <p style={stylesheet.resultado}>R${FGTS}</p>
-                    </Col>
-                    </Row>
+                    <div style={stylesheet.tabelaResultados}>
+                        
+                            <ListGroup>
+                                <Row>
+                                    <Col style={stylesheet.itemTabelaResultadosLeft}>
+                                        <ListGroup.Item>Salário Liquido:</ListGroup.Item>
+                                    </Col>
+                                    <Col style={stylesheet.itemTabelaResultadosRight}>
+                                        <ListGroup.Item>R${salarioLiquido}</ListGroup.Item>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col style={stylesheet.itemTabelaResultadosLeft}>
+                                    <ListGroup.Item>INSS:</ListGroup.Item>
+                                    </Col>
+                                    <Col style={stylesheet.itemTabelaResultadosRight}>
+                                    <ListGroup.Item>R${INSS}</ListGroup.Item>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col style={stylesheet.itemTabelaResultadosLeft}>
+                                        <ListGroup.Item>IRPF:</ListGroup.Item>
+                                    </Col>
+                                    <Col style={stylesheet.itemTabelaResultadosRight}>
+                                        <ListGroup.Item>R${IRPF}</ListGroup.Item>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col style={stylesheet.itemTabelaResultadosLeft}>
+                                        <ListGroup.Item>FGTS:</ListGroup.Item>
+                                    </Col>
+                                    <Col style={stylesheet.itemTabelaResultadosRight}>
+                                        <ListGroup.Item>R${FGTS}</ListGroup.Item>
+                                    </Col>
+                                </Row>
+                            </ListGroup>
+                        
+                    </div>
                 </div>
-                
+                <div style={stylesheet.precoProd}>
+                <Form style={stylesheet.form}>
+                        <Col>
+                        Preço Inicial:
+                        <Form.Control style={stylesheet.input} type="number" placeholder="" value={precoInicial} onChange={e => setPrecoInicial(e.target.value)}/>
+                        Margem de Lucro:
+                        <Form.Control style={stylesheet.input} type="number" placeholder="" value={margemLucro} onChange={e => setMargemLucro(e.target.value)}/>
+                        <br></br>
+                        <Button onClick={()=>calcularPreco()} style={stylesheet.botao} variant="primary">
+                        Calcular
+                        </Button>
+                        </Col>
+                    </Form>
+                    <div style={stylesheet.tabelaResultados}>
+                        
+                            <ListGroup>
+                                <Row>
+                                    <Col style={stylesheet.itemTabelaResultadosLeft}>
+                                        <ListGroup.Item>Preço Final:</ListGroup.Item>
+                                    </Col>
+                                    <Col style={stylesheet.itemTabelaResultadosRight}>
+                                        <ListGroup.Item>R${VL}</ListGroup.Item>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col style={stylesheet.itemTabelaResultadosLeft}>
+                                    <ListGroup.Item>Impostos:</ListGroup.Item>
+                                    </Col>
+                                    <Col style={stylesheet.itemTabelaResultadosRight}>
+                                    <ListGroup.Item>R${VI}</ListGroup.Item>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col style={stylesheet.itemTabelaResultadosLeft}>
+                                        <ListGroup.Item>Lucro:</ListGroup.Item>
+                                    </Col>
+                                    <Col style={stylesheet.itemTabelaResultadosRight}>
+                                        <ListGroup.Item>R${margem}</ListGroup.Item>
+                                    </Col>
+                                </Row>
+                            </ListGroup>
+                        
+                    </div>
+                </div>
+                <div style={stylesheet.ASD2}>
+
+                </div>
+                <div style={stylesheet.ASD3}>
+                    
+                </div>
             </div> 
 }
-

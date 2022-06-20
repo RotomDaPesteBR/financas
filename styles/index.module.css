@@ -1,0 +1,15 @@
+.navbarItems{
+    padding: 0%;
+    width: 10vw;
+    height: 65px;
+    background-color: #212529;
+    color: white;
+    border: none;
+}
+.navbarItems:hover{
+    background-color: white;
+    color:#212529;
+    border: white;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
