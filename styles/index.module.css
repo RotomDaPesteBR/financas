@@ -1,15 +1,15 @@
 .navbarItems{
     padding: 0%;
-    width: 10vw;
+    width: 15vw;
     height: 65px;
     background-color: #212529;
     color: white;
     border: none;
 }
 .navbarItems:hover{
-    background-color: white;
+    background-color: lightgray;
     color:#212529;
-    border: white;
+    border: lightgray;
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
 }

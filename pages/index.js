@@ -6,12 +6,15 @@ import { Container, Col, Row, Form, Button, ButtonGroup, Nav, Navbar, ListGroup 
 export default function Home(){
     const [salLiq, setSalLiq] = useState("flex");
     const [precoProd, setPrecoProd] = useState("none");
-    const [ASD2, setASD2] = useState("none");
+    const [rescisaoContrato, setRescisaoContrato] = useState("none");
     const [ASD3, setASD3] = useState("none");
 
     const [salarioBruto, setSalarioBruto] = useState(" ");
     const [precoInicial, setPrecoInicial] = useState(" ");
     const [margemLucro, setMargemLucro] = useState(" ");
+    const [resSalarioLiquido, setResSalarioLiquido] = useState(" ");
+    const [tempoTrabalhado, setTempoTrabalhado] = useState(" ");
+    const [feriasVencidas, setFeriasVencidas] = useState(false);
 
     const [salarioLiquido, setSalarioLiquido] = useState("0");
     const [INSS, setINSS] = useState("0");
@@ -20,6 +23,9 @@ export default function Home(){
     const [VI, setVI] = useState("0");
     const [margem, setMargem] = useState("0");
     const [VL, setVL] = useState("0");
+    const [rescisaoFGTS, setRescisaoFGTS] = useState("0");
+    const [precoFerias, setPrecoFerias] = useState("0");
+    const [valorFinalRescisao, setValorFinalRescisao] = useState("0");
 
     let valorINSS;
     let valorIRPF;
@@ -101,47 +107,65 @@ export default function Home(){
         setVL(valorVL.toFixed(2));
     }
 
+    function CalcularRescisao(){
+        let ResFGTS = ((resSalarioLiquido / 100) * 8) * tempoTrabalhado;
+        let quantFerias = 0;
+        let valorFerias = 0;
+        let valorFinal = 0;
+
+        if (feriasVencidas == true){
+            quantFerias = tempoTrabalhado / 12;
+            for(quantFerias; quantFerias >= 1; quantFerias--){
+                valorFerias += (resSalarioLiquido / 3)
+            }
+        }
+        valorFinal = ResFGTS + valorFerias + parseFloat(resSalarioLiquido);
+        setRescisaoFGTS(ResFGTS.toFixed(2));
+        setPrecoFerias(valorFerias.toFixed(2));
+        setValorFinalRescisao(valorFinal.toFixed(2));
+    }
+
     function showSalLiq() {
         setSalLiq("flex");
         setPrecoProd("none");
-        setASD2("none");
+        setRescisaoContrato("none");
         setASD3("none");
         setSalLiqButton(stylesheet.selected);
         setPrecoProdutoButton();
-        setASD2Button();
+        setRescisaoContratoButton();
         setASD3Button();
     }
 
     function showPrecoProduto(){
         setSalLiq("none");
         setPrecoProd("flex");
-        setASD2("none");
+        setRescisaoContrato("none");
         setASD3("none");
         setSalLiqButton();
         setPrecoProdutoButton(stylesheet.selected);
-        setASD2Button();
+        setRescisaoContratoButton();
         setASD3Button();
     }
 
-    function showASD2() {
+    function showRescisaoContrato() {
         setSalLiq("none");
         setPrecoProd("none");
-        setASD2("flex");
+        setRescisaoContrato("flex");
         setASD3("none");
         setSalLiqButton();
         setPrecoProdutoButton();
-        setASD2Button(stylesheet.selected);
+        setRescisaoContratoButton(stylesheet.selected);
         setASD3Button();
     }
 
     function showASD3() {
         setSalLiq("none");
         setPrecoProd("none");
-        setASD2("none");
+        setRescisaoContrato("none");
         setASD3("flex");
         setSalLiqButton();
         setPrecoProdutoButton();
-        setASD2Button();
+        setRescisaoContratoButton();
         setASD3Button(stylesheet.selected);
     }
 
@@ -186,6 +210,16 @@ export default function Home(){
         input: {
             textAlign: "center",
         },
+        
+        switch:{
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+        },
+
+        switchSpacing:{
+            width: "20%",
+        },
 
         operacao:{
             fontSize: "20px",
@@ -225,8 +259,8 @@ export default function Home(){
             width: "100%",
         },
 
-        ASD2: {
-            display: ASD2,
+        rescisaoContrato: {
+            display: rescisaoContrato,
             justifyContent: "center",
             flexDirection: "column",
             width: "100%",
@@ -242,14 +276,14 @@ export default function Home(){
 
         const [salLiqButton, setSalLiqButton] = useState(stylesheet.selected);
         const [precoProdutoButton, setPrecoProdutoButton] = useState();
-        const [ASD2Button, setASD2Button] = useState();
+        const [rescisaoContratoButton, setRescisaoContratoButton] = useState();
         const [ASD3Button, setASD3Button] = useState();
 
     return  <div style={stylesheet.content}>
                 <ul style={stylesheet.navbar}>
                         <li><button onClick={()=>showSalLiq()} className={styles.navbarItems} style={salLiqButton}>Salario Líquido</button></li>
                         <li><button onClick={()=>showPrecoProduto()} className={styles.navbarItems} style={precoProdutoButton}>Preço Produto</button></li>
-                        <li><button onClick={()=>showASD2()} style={ASD2Button} className={styles.navbarItems}>ASD</button></li>
+                        <li><button onClick={()=>showRescisaoContrato()} className={styles.navbarItems} style={rescisaoContratoButton}>Rescisão de Contrato de Trabalho</button></li>
                         <li><button onClick={()=>showASD3()} style={ASD3Button} className={styles.navbarItems}>ASD</button></li> 
                 </ul>
                 <div style={stylesheet.salarioLiq}>
@@ -263,12 +297,13 @@ export default function Home(){
                         </Button>
                         </Col>
                     </Form>
+                    <br></br>
                     <div style={stylesheet.tabelaResultados}>
                         
                             <ListGroup>
                                 <Row>
                                     <Col style={stylesheet.itemTabelaResultadosLeft}>
-                                        <ListGroup.Item>Salário Liquido:</ListGroup.Item>
+                                        <ListGroup.Item>Salário Líquido:</ListGroup.Item>
                                     </Col>
                                     <Col style={stylesheet.itemTabelaResultadosRight}>
                                         <ListGroup.Item>R${salarioLiquido}</ListGroup.Item>
@@ -315,6 +350,7 @@ export default function Home(){
                         </Button>
                         </Col>
                     </Form>
+                    <br></br>
                     <div style={stylesheet.tabelaResultados}>
                         
                             <ListGroup>
@@ -346,8 +382,54 @@ export default function Home(){
                         
                     </div>
                 </div>
-                <div style={stylesheet.ASD2}>
-
+                <div style={stylesheet.rescisaoContrato}>
+                    <Form style={stylesheet.form}>
+                            <Col>
+                            Salário Líquido:
+                            <Form.Control style={stylesheet.input} type="number" placeholder="" value={resSalarioLiquido} onChange={e => setResSalarioLiquido(e.target.value)}/>
+                            Tempo Trabalhado (Meses):
+                            <Form.Control style={stylesheet.input} type="number" placeholder="" value={tempoTrabalhado} onChange={e => setTempoTrabalhado(e.target.value)}/>
+                            <br></br>
+                            <div style={stylesheet.switch}>
+                                <div style={stylesheet.switchSpacing}>Férias Vencidas:</div>
+                                <div><Form.Check type="switch" onChange={e => setFeriasVencidas(e.target.checked)}/></div>
+                                <div style={stylesheet.switchSpacing}></div>
+                            </div>
+                            <br></br>
+                            <Button onClick={()=>CalcularRescisao()} style={stylesheet.botao} variant="primary">
+                            Calcular
+                            </Button>
+                            </Col>
+                    </Form>
+                    <br></br>
+                    <div style={stylesheet.tabelaResultados}>
+                        <ListGroup>
+                            <Row>
+                                <Col style={stylesheet.itemTabelaResultadosLeft}>
+                                    <ListGroup.Item>Valor Final:</ListGroup.Item>
+                                </Col>
+                                <Col style={stylesheet.itemTabelaResultadosRight}>
+                                    <ListGroup.Item>R${valorFinalRescisao}</ListGroup.Item>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col style={stylesheet.itemTabelaResultadosLeft}>
+                                    <ListGroup.Item>Ferias Vencidas:</ListGroup.Item>
+                                </Col>
+                                <Col style={stylesheet.itemTabelaResultadosRight}>
+                                    <ListGroup.Item>R${precoFerias}</ListGroup.Item>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col style={stylesheet.itemTabelaResultadosLeft}>
+                                    <ListGroup.Item>FGTS:</ListGroup.Item>
+                                </Col>
+                                <Col style={stylesheet.itemTabelaResultadosRight}>
+                                    <ListGroup.Item>R${rescisaoFGTS}</ListGroup.Item>
+                                </Col>
+                            </Row>
+                        </ListGroup>
+                    </div>
                 </div>
                 <div style={stylesheet.ASD3}>
                     
