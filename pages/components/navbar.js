@@ -24,6 +24,6 @@ const stylesheet = {
     position: "fixed",
     top: "0",
     height: "65px",
-    zIndex: "10",
+    zIndex: "1",
     width: "100%"
 }

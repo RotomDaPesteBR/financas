@@ -68,7 +68,6 @@ export default function Home(){
             marginTop: "65px",
             marginBottom: "0",
             height: "65px",
-            zIndex: "10",
             width: "100%",
             backgroundColor: "#212529",
             alignItems: "center",
