@@ -3,10 +3,19 @@ import Navbar from 'react-bootstrap/Navbar';
 export default function MainNavbar() {
     return (
         <Navbar style={stylesheet} bg="dark" variant='dark'>
-        <Container>
-            <Navbar.Brand style={{fontSize: "30px"}} href="./">Finanças</Navbar.Brand>
-        </Container>
-      </Navbar>
+            <Container>
+                <Navbar.Brand style={{display: "flex", fontSize: "30px", alignItems: "center"}} href="./">
+                    <img
+                    src="/icon.png"
+                    width="40"
+                    height="40"
+                    className="d-inline-block align-top"
+                    style={{marginRight: "10px"}}
+                    />
+                    Finanças
+                </Navbar.Brand>
+            </Container>
+        </Navbar>
         )
 }
 
