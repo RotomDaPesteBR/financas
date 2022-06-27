@@ -66,7 +66,7 @@ export default function Home(){
         navbar:{
             display: "inline-flex",
             marginTop: "65px",
-            marginRight: "0",
+            marginBottom: "0",
             height: "65px",
             zIndex: "10",
             width: "100%",
@@ -93,6 +93,7 @@ export default function Home(){
             justifyContent: "center",
             flexDirection: "column",
             width: "100%",
+            height: "calc(100vh - 130px)",
         },
 
         precoProd: {
@@ -100,6 +101,7 @@ export default function Home(){
             justifyContent: "center",
             flexDirection: "column",
             width: "100%",
+            height: "calc(100vh - 130px)",
         },
 
         rescisaoContrato: {
@@ -107,6 +109,7 @@ export default function Home(){
             justifyContent: "center",
             flexDirection: "column",
             width: "100%",
+            height: "calc(100vh - 130px)",
         },
 
         ASD3: {
@@ -114,6 +117,7 @@ export default function Home(){
             justifyContent: "center",
             flexDirection: "column",
             width: "100%",
+            height: "calc(100vh - 130px)",
         },
     }
 
